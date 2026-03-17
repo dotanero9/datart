@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: datart-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: datart123456
+      MYSQL_DATABASE: datart
+    volumes:
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    command: --lower_case_table_names=1 --skip-character-set-client-handshake
+
+  redis:
+    image: redis:latest
+    container_name: datart-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: datart-backend
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    volumes:
+      - ./backend/src:/app/backend/src
+    command: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+  frontend:
+    image: node:16
+    container_name: datart-frontend
+    working_dir: /app/frontend
+    depends_on:
+      - backend
+    ports:
+      - "8088:8088"
+    volumes:
+      - .:/app
+    command: >
+      sh -c "
+        cd /app/frontend &&
+        npm install &&
+        npm run dev
+      "
+
+volumes:
+  mysql_data:
+  redis_data:
