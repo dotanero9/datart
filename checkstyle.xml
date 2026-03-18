@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+    "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
+    "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8"/>
+
+    <property name="severity" value="warning"/>
+
+    <property name="fileExtensions" value="java, properties, xml"/>
+    
+    <!-- 文件长度检查 -->
+    <module name="FileLength">
+        <property name="max" value="3000"/>
+    </module>
+
+    <!-- 每行字符数检查 -->
+    <module name="LineLength">
+        <property name="max" value="120"/>
+        <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+    </module>
+
+    <!-- 每个文件一个包声明 -->
+    <module name="OneTopLevelClass"/>
+
+    <!-- 注释缩进检查 -->
+    <module name="CommentsIndentation">
+        <property name="tokens" value="BLOCK_COMMENT_BEGIN"/>
+    </module>
+
+    <!-- 无 tab 字符 -->
+    <module name="FileTabCharacter">
+        <property name="eachLine" value="true"/>
+    </module>
+
+    <!-- 包名检查 -->
+    <module name="PackageName">
+        <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+        <message key="name.invalidPattern"
+                 value="Package name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!-- 类型名称检查 -->
+    <module name="TypeName">
+        <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF,
+                    ANNOTATION_DEF, RECORD_DEF"/>
+        <message key="name.invalidPattern"
+                 value="Type name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!-- 方法名称检查 -->
+    <module name="MethodName">
+        <property name="format" value="^[a-z][a-z0-9][a-zA-Z0-9_]*$"/>
+        <message key="name.invalidPattern"
+                 value="Method name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!-- 常量名称检查 -->
+    <module name="ConstantName"/>
+
+    <!-- 变量名称检查 -->
+    <module name="LocalVariableName">
+        <property name="format" value="^[a-z]([a-z0-9][a-zA-Z0-9]*)?$"/>
+        <message key="name.invalidPattern"
+                 value="Local variable name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <module name="ClassTypeParameterName">
+        <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+        <message key="name.invalidPattern"
+                 value="Class type name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <module name="MethodTypeParameterName">
+        <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+        <message key="name.invalidPattern"
+                 value="Method type name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <module name="InterfaceTypeParameterName">
+        <property name="format" value="(^[A-Z][0-9]?)$|([A-Z][a-zA-Z0-9]*[T]$)"/>
+        <message key="name.invalidPattern"
+                 value="Interface type name ''{0}'' must match pattern ''{1}''."/>
+    </module>
+
+    <!-- 操作符换行检查 -->
+    <module name="OperatorWrap">
+        <property name="option" value="NL"/>
+        <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL,
+                    GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR,
+                    LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION,
+                    SL, SR, STAR, METHOD_REF "/>
+    </module>
+
+    <!-- 标记注释检查 -->
+    <module name="SeparatorWrap">
+        <property name="id" value="SeparatorWrapDot"/>
+        <property name="tokens" value="DOT"/>
+        <property name="option" value="nl"/>
+    </module>
+
+    <module name="SeparatorWrap">
+        <property name="id" value="SeparatorWrapComma"/>
+        <property name="tokens" value="COMMA"/>
+        <property name="option" value="EOL"/>
+    </module>
+
+    <module name="SeparatorWrap">
+        <property name="id" value="SeparatorWrapEllipsis"/>
+        <property name="tokens" value="ELLIPSIS"/>
+        <property name="option" value="EOL"/>
+    </module>
+
+    <module name="SeparatorWrap">
+        <property name="id" value="SeparatorWrapArrayDeclarator"/>
+        <property name="tokens" value="ARRAY_DECLARATOR"/>
+        <property name="option" value="EOL"/>
+    </module>
+
+    <module name="SeparatorWrap">
+        <property name="id" value="SeparatorWrapMethodRef"/>
+        <property name="tokens" value="METHOD_REF"/>
+        <property name="option" value="nl"/>
+    </module>
+
+    <!-- 数组声明风格检查 -->
+    <module name="ArrayTypeStyle"/>
+
+    <!-- 冗余修饰符检查 -->
+    <module name="ModifierOrder"/>
+
+    <module name="RedundantModifier">
+        <property name="tokens" value="METHOD_DEF, VARIABLE_DEF, ANNOTATION_FIELD_DEF,
+                    INTERFACE_DEF, CLASS_DEF, ENUM_DEF,
+                    CONSTRUCTOR_DEF"/>
+    </module>
+
+    <!-- 空块检查 -->
+    <module name="EmptyBlock">
+        <property name="option" value="TEXT"/>
+        <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+    </module>
+
+    <module name="EmptyCatchBlock">
+        <property name="exceptionVariableName" value="expected|ignore"/>
+    </module>
+
+    <!-- 左大括号位置检查 -->
+    <module name="LeftCurly"/>
+
+    <!-- 右大括号位置检查 -->
+    <module name="RightCurly">
+        <property name="id" value="RightCurlySame"/>
+        <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE,
+                    LITERAL_DO"/>
+    </module>
+
+    <module name="RightCurly">
+        <property name="id" value="RightCurlyAlone"/>
+        <property name="option" value="alone"/>
+        <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT,
+                    INSTANCE_INIT"/>
+    </module>
+
+    <!-- 空白行检查 -->
+    <module name="WhitespaceAround">
+        <property name="allowEmptyConstructors" value="true"/>
+        <property name="allowEmptyLambdas" value="true"/>
+        <property name="allowEmptyMethods" value="true"/>
+        <property name="allowEmptyTypes" value="true"/>
+        <property name="allowEmptyLoops" value="true"/>
+        <message key="ws.notFollowed"
+                 value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
+        <message key="ws.notPreceded"
+                 value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
+    </module>
+
+    <!-- 逗号周围空白检查 -->
+    <module name="GenericWhitespace">
+        <message key="ws.followed"
+                 value="GenericWhitespace ''{0}'' is followed by whitespace."/>
+        <message key="ws.preceded"
+                 value="GenericWhitespace ''{0}'' is preceded with whitespace."/>
+        <message key="ws.illegalFollow"
+                 value="GenericWhitespace ''{0}'' should followed by whitespace."/>
+        <message key="ws.notPreceded"
+                 value="GenericWhitespace ''{0}'' is not preceded with whitespace."/>
+    </module>
+
+    <!-- 方法参数对齐检查 -->
+    <module name="MethodParamPad">
+        <property name="tokens" value="CTOR_DEF, LITERAL_NEW, METHOD_CALL,
+                    METHOD_DEF, SUPER_CTOR_CALL, ENUM_CONSTANT_DEF, RECORD_DEF"/>
+    </module>
+
+    <!-- 注解位置检查 -->
+    <module name="AnnotationLocation">
+        <property name="id" value="AnnotationLocationMostCases"/>
+        <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
+    </module>
+
+    <module name="AnnotationLocation">
+        <property name="id" value="AnnotationLocationVariables"/>
+        <property name="tokens" value="VARIABLE_DEF"/>
+        <property name="allowSamelineMultipleAnnotations" value="true"/>
+    </module>
+
+    <!-- 变量声明在同一行检查 -->
+    <module name="MultipleVariableDeclarations"/>
+
+    <!-- 构造器超级调用缩进检查 -->
+    <module name="NoFinalizer"/>
+
+    <!-- 括号内部空白检查 -->
+    <module name="OneStatementPerLine"/>
+
+    <!-- 私有方法没有使用检查 -->
+    <module name="UnusedImports"/>
+
+    <module name="NeedBraces"/>
+
+    <module name="OverloadMethodsDeclarationOrder"/>
+
+    <module name="VariableDeclarationUsageDistance"/>
+
+    <!-- Import 检查 -->
+    <module name="AvoidStarImport"/>
+    <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+    <module name="RedundantImport"/>
+    <module name="UnusedImports"/>
+
+    <!-- Javadoc 检查 -->
+    <module name="JavadocStyle"/>
+
+    <module name="SummaryJavadoc">
+        <property name="forbiddenSummaryFragments" value="^@return the *|^This method returns |^A [{]@code [a-zA-Z0-9]+[}]( is a )"/>
+    </module>
+
+    <module name="JavadocParagraph"/>
+
+    <module name="AtclauseOrder">
+        <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
+        <property name="target" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
+    </module>
+
+    <module name="JavadocTagContinuationIndentation"/>
+
+    <module name="NonEmptyAtclauseDescription"/>
+
+    <module name="RequireEmptyLineBeforeBlockTagGroup"/>
+
+    <!-- 设计相关检查 -->
+    <module name="DesignForExtension">
+        <property name="ignoredAnnotations" value="Override"/>
+    </module>
+
+    <module name="HideUtilityClassConstructor"/>
+
+    <module name="InterfaceIsType">
+        <property name="allowMarkerInterfaces" value="true"/>
+    </module>
+
+    <module name="VisibilityModifier">
+        <property name="allowPublicFinalFields" value="true"/>
+        <property name="allowPublicImmutableFields" value="true"/>
+    </module>
+
+</module>
