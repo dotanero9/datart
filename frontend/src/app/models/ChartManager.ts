@@ -42,6 +42,13 @@ import {
   WaterfallChart,
   WordCloudChart,
 } from 'app/components/ChartGraph';
+import {
+  SankeyChart,
+  HeatmapChart,
+  GraphChart,
+  FunnelChart,
+  GanttChart,
+} from 'views/viz/newCharts';
 import { IChart } from 'app/types/Chart';
 import { getChartPluginPaths } from 'app/utils/fetch';
 import { Debugger } from 'utils/debugger';
@@ -132,6 +139,12 @@ class ChartManager {
       new ScatterOutlineMapChart(),
       new BasicGaugeChart(),
       new BasicRichText(),
+      // 新增图表类型
+      new SankeyChart(),
+      new HeatmapChart(),
+      new GraphChart(),
+      new FunnelChart(),
+      new GanttChart(),
     ];
   }
 }
