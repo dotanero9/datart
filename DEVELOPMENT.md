@@ -1,122 +1,144 @@
-# Datart 开发环境搭建指南
+# DatArt 开发环境配置指南
 
-## 环境检查报告
+## 环境要求
 
-### 已安装的开发工具
-- **Java**: 11.0.30 (满足 JDK 11+ 要求)
-- **Node.js**: 22.22.1 (满足 Node 16+ 要求)
-- **Maven**: 3.8.7 (随 Java 安装)
-- **MySQL**: 8.0.45 (满足 MySQL 8+ 要求)
-- **Redis**: 7.0.15 (满足 Redis 要求)
+### 硬件要求
+- 内存：至少 8GB RAM（推荐 16GB）
+- 存储：至少 10GB 可用空间
+- CPU：双核或以上
 
-### 项目结构
-- **后端代码**: `/root/.openclaw/workspace/datart/server`
-- **前端代码**: `/root/.openclaw/workspace/datart/frontend`
-- **核心模块**: `/root/.openclaw/workspace/datart/core`
+### 软件要求
+- Docker Engine >= 20.10
+- Docker Compose >= 1.29
+- Git
+- Node.js (本地开发可选)
+- Java JDK 11 (本地开发可选)
 
-## 开发环境配置
+## 快速启动指南
 
-### 1. Docker Compose 配置
-Docker Compose 开发环境配置文件已创建：
-- **路径**: `/root/.openclaw/workspace/datart/docker-compose.dev.yml`
-- **服务包括**: MySQL, Redis, 后端服务, 前端服务
-
-### 2. 后端配置
-- **开发配置文件**: `/root/.openclaw/workspace/datart/backend/src/main/resources/application-dev.yml`
-- **数据库连接**: MySQL localhost:3306/datart
-- **Redis连接**: localhost:6379
-
-### 3. 前端配置
-- **开发环境变量**: `/root/.openclaw/workspace/datart/frontend/.env.development`
-- **API代理目标**: http://localhost:8080
-
-## 服务启动状态
-
-### 数据库服务
-- **MySQL**: 已启动，监听 3306 端口
-- **Redis**: 已启动，监听 6379 端口
-- **数据库**: datart 已创建
-
-### 后端服务
-- **状态**: 配置完成，准备就绪
-- **启动命令**: 
-  ```bash
-  cd /root/.openclaw/workspace/datart/server
-  mvn spring-boot:run -Dspring-boot.run.profiles=dev
-  ```
-- **访问地址**: http://localhost:8080
-
-### 前端服务
-- **状态**: 依赖安装完成
-- **启动命令**:
-  ```bash
-  cd /root/.openclaw/workspace/datart/frontend
-  npm run dev
-  ```
-- **访问地址**: http://localhost:8088
-
-## 开发环境使用说明
-
-### 1. 启动开发环境
-1. 启动数据库服务：
-   ```bash
-   sudo systemctl start mysql redis
-   ```
-
-2. 初始化数据库：
-   ```bash
-   mysql -u root -e "CREATE DATABASE IF NOT EXISTS datart CHARACTER SET 'utf8' COLLATE 'utf8_general_ci';"
-   ```
-
-3. 启动后端服务：
-   ```bash
-   cd /root/.openclaw/workspace/datart/server
-   mvn spring-boot:run -Dspring-boot.run.profiles=dev
-   ```
-
-4. 在另一个终端启动前端服务：
-   ```bash
-   cd /root/.openclaw/workspace/datart/frontend
-   npm run dev
-   ```
-
-### 2. 常见问题解决
-
-#### Node.js 版本兼容性问题
-如果遇到前端构建错误，请使用较低版本的 Node.js：
+### 1. 克隆项目
 ```bash
-# 使用 nvm 切换 Node.js 版本（如果已安装）
-nvm install 16
-nvm use 16
+git clone <repository-url>
+cd datart
 ```
 
-#### 数据库连接问题
-确保 MySQL 服务正在运行并创建了 datart 数据库：
+### 2. 启动开发环境
 ```bash
-sudo systemctl status mysql
-mysql -u root -e "SHOW DATABASES LIKE 'datart';"
+# 进入项目根目录
+cd datart
+
+# 启动所有服务
+docker-compose -f docker-compose.dev.yml up -d
 ```
 
-## 访问地址
+### 3. 服务访问地址
+- 前端应用：http://localhost:3000
+- 后端 API：http://localhost:8080
+- MySQL 数据库：localhost:3306
+- Redis 缓存：localhost:6379
 
-- **后端 API**: http://localhost:8080
-- **前端界面**: http://localhost:8088
-- **数据库管理**: MySQL localhost:3306
-- **Redis**: localhost:6379
+### 4. 查看服务日志
+```bash
+# 查看所有服务日志
+docker-compose -f docker-compose.dev.yml logs -f
 
-## 开发资源
+# 查看特定服务日志
+docker-compose -f docker-compose.dev.yml logs -f backend
+```
 
-- **项目文档**: 参考项目根目录下的 README.md 和 Deployment.md
-- **代码位置**: 
-  - 后端: `/root/.openclaw/workspace/datart/server`
-  - 前端: `/root/.openclaw/workspace/datart/frontend`
-  - 核心: `/root/.openclaw/workspace/datart/core`
+### 5. 停止开发环境
+```bash
+# 停止所有服务
+docker-compose -f docker-compose.dev.yml down
 
-## 注意事项
+# 停止服务但保留数据卷
+docker-compose -f docker-compose.dev.yml down -v
+```
 
-1. 当前环境使用开发模式，不适用于生产环境
-2. 默认数据库用户为 root，无密码
-3. 前端构建在 Node.js v22 上可能存在兼容性问题，建议使用 Node.js 16+
-4. 系统会在首次启动时自动初始化数据库表结构
+## 开发工作流
 
-开发环境已准备就绪，您可以开始进行 Datart 的开发工作。
+### 后端开发
+- 源码修改会自动重新加载（需要配置 Spring Boot DevTools）
+- 测试端点：http://localhost:8080/api/test
+
+### 前端开发
+- 源码修改会触发热重载
+- 代理设置已配置，API 请求将转发到后端服务
+
+### 数据库管理
+- 默认数据库：datart
+- 用户名：datart
+- 密码：datart123
+
+## 常见问题排查
+
+### Q: 端口已被占用
+A: 修改 `docker-compose.dev.yml` 中的端口映射，例如：
+```yaml
+ports:
+  - "3307:3306"  # MySQL
+  - "6380:6379"  # Redis
+  - "8081:8080"  # Backend
+  - "3001:3000"  # Frontend
+```
+
+### Q: 内存不足
+A: 在 Docker 设置中增加内存分配，或减少服务资源限制：
+```yaml
+backend:
+  deploy:
+    resources:
+      limits:
+        memory: 2G
+      reservations:
+        memory: 1G
+```
+
+### Q: 构建失败
+A: 清理 Docker 构建缓存：
+```bash
+docker builder prune -a
+docker-compose -f docker-compose.dev.yml build --no-cache
+```
+
+### Q: 依赖下载缓慢
+A: 配置国内镜像源：
+```bash
+# Maven 镜像配置
+# 在 .mvn/maven.config 或 settings.xml 中添加阿里云镜像
+
+# NPM 镜像配置
+npm config set registry https://registry.npmmirror.com
+```
+
+### Q: 数据库连接失败
+A: 确认 MySQL 服务状态：
+```bash
+docker-compose -f docker-compose.dev.yml logs mysql
+docker exec -it datart-mysql-dev mysql -u datart -pdatart123 datart
+```
+
+### Q: 前端无法连接后端
+A: 检查环境变量配置，确认 `REACT_APP_API_URL` 指向正确的后端地址。
+
+## 开发工具配置
+
+### IDE 推荐
+- 后端：IntelliJ IDEA 或 Eclipse
+- 前端：VS Code 或 WebStorm
+
+### 调试配置
+- 后端：通过暴露的 8080 端口进行远程调试
+- 前端：使用浏览器开发者工具
+
+## 数据持久化
+
+开发环境中的数据卷：
+- `mysql_data_dev`: MySQL 数据持久化
+- `redis_data_dev`: Redis 数据持久化
+
+如需清理数据：
+```bash
+docker volume rm datart_mysql_data_dev
+docker volume rm datart_redis_data_dev
+```

@@ -3,58 +3,81 @@ version: '3.8'
 services:
   mysql:
     image: mysql:8.0
-    container_name: datart-mysql
+    container_name: datart-mysql-dev
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: datart123456
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: datart
+      MYSQL_USER: datart
+      MYSQL_PASSWORD: datart123
     volumes:
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
-      - mysql_data:/var/lib/mysql
-    command: --lower_case_table_names=1 --skip-character-set-client-handshake
+      - mysql_data_dev:/var/lib/mysql
+      - ./config/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - datart-network
+    restart: unless-stopped
 
   redis:
-    image: redis:latest
-    container_name: datart-redis
+    image: redis:6-alpine
+    container_name: datart-redis-dev
     ports:
       - "6379:6379"
     volumes:
-      - redis_data:/data
+      - redis_data_dev:/data
+    networks:
+      - datart-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
 
   backend:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: datart-backend
+      dockerfile: Dockerfile.backend.dev
+    container_name: datart-backend-dev
+    ports:
+      - "8080:8080"
     depends_on:
       - mysql
       - redis
-    ports:
-      - "8080:8080"
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
-    volumes:
-      - ./backend/src:/app/backend/src
-    command: mvn spring-boot:run -Dspring-boot.run.profiles=dev
-
-  frontend:
-    image: node:16
-    container_name: datart-frontend
-    working_dir: /app/frontend
-    depends_on:
-      - backend
-    ports:
-      - "8088:8088"
     volumes:
       - .:/app
-    command: >
-      sh -c "
-        cd /app/frontend &&
-        npm install &&
-        npm run dev
-      "
+      - ~/.m2:/root/.m2
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - DATART_DB_HOST=mysql
+      - DATART_DB_PORT=3306
+      - DATART_REDIS_HOST=redis
+      - DATART_REDIS_PORT=6379
+    networks:
+      - datart-network
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend.dev
+    container_name: datart-frontend-dev
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+      - NODE_ENV=development
+    networks:
+      - datart-network
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
 
 volumes:
-  mysql_data:
-  redis_data:
+  mysql_data_dev:
+  redis_data_dev:
+
+networks:
+  datart-network:
+    driver: bridge
