@@ -6,6 +6,7 @@
         <artifactId>datart-parent</artifactId>
         <groupId>datart</groupId>
         <version>1.0.0-rc.3</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -268,6 +269,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <executable>npm</executable>
                             <arguments>
                                 <argument>run</argument>
@@ -285,6 +287,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <skip>true</skip>
                             <executable>npm</executable>
                             <arguments>
                                 <argument>run</argument>
@@ -296,6 +299,7 @@
                 </executions>
             </plugin>
 
+            <!-- Commented out: frontend build not required for backend-only dev
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -317,7 +321,9 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
 
+            <!-- Commented out: frontend build not required for backend-only dev
             <plugin>
                 <groupId>com.coderplus.maven.plugins</groupId>
                 <artifactId>copy-rename-maven-plugin</artifactId>
@@ -337,6 +343,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
 

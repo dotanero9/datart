@@ -116,3 +116,62 @@ export interface SelectPrivilegesProps {
   viewpoint: Viewpoints;
   dataSourceType: ResourceTypes | SubjectTypes;
 }
+
+// 字段权限相关类型
+export interface FieldPermission {
+  fieldId: string;
+  fieldName: string;
+  visibility: 'VISIBLE' | 'HIDDEN' | 'MASKED';
+  maskingRuleId?: string | null;
+  maskType?: string | null;
+  maskParams?: any;
+}
+
+export interface ViewField {
+  id: string;
+  name: string;
+  type: string;
+  description?: string;
+}
+
+export interface FieldPermissionSetting {
+  viewId: string;
+  permissions: FieldPermission[];
+  defaultVisibility: 'VISIBLE' | 'HIDDEN' | 'MASKED';
+  defaultMaskingRule?: string;
+}
+
+export interface MaskingRule {
+  id: string;
+  name: string;
+  maskType: string;
+  description?: string;
+  params?: any;
+  orgId: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface BuiltInMaskingRuleType {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface InheritanceLevel {
+  level: 'ORGANIZATION' | 'DEPARTMENT' | 'TEAM' | 'USER';
+  enabled: boolean;
+  cascades: Array<{
+    type: string;
+    label: string;
+    enabled: boolean;
+  }>;
+  description: string;
+}
+
+export interface PermissionInheritance {
+  orgId: string;
+  levels: InheritanceLevel[];
+  enableFieldLevelInheritance: boolean;
+  enableMaskingRuleInheritance: boolean;
+}
