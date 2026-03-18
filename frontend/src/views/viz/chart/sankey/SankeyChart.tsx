@@ -35,9 +35,8 @@ class SankeyChart extends Chart {
     );
     this.meta.requirements = [
       {
-        source: 1,
-        target: 1,
-        linkValue: 1,
+        group: [2, 999],
+        aggregate: 1,
       },
     ];
   }

@@ -3,7 +3,7 @@
  */
 import { EChartsCoreOption, SeriesOption } from 'echarts';
 
-export interface GanttSeries extends SeriesOption {
+export interface GanttSeries extends Omit<SeriesOption, 'type'> {
   type: 'custom';
   renderItem?: (params: any, api: any) => any;
   encode?: {

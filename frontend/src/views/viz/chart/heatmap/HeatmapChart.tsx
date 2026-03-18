@@ -35,9 +35,8 @@ class HeatmapChart extends Chart {
     );
     this.meta.requirements = [
       {
-        xAxis: 1,
-        yAxis: 1,
-        metrics: 1,
+        group: [2, 999],
+        aggregate: 1,
       },
     ];
   }

@@ -3,8 +3,20 @@
  */
 import { EChartsCoreOption, SeriesOption } from 'echarts';
 
-export interface SankeySeries extends SeriesOption {
+export interface SankeySeries extends Omit<SeriesOption, 'type'> {
   type: 'sankey';
+  data?: Array<{
+    name: string;
+    value?: number;
+    itemStyle?: {
+      color?: string;
+    };
+  }>;
+  links?: Array<{
+    source: string;
+    target: string;
+    value?: number;
+  }>;
   emphasis?: {
     focus?: 'none' | 'self' | 'adjacency';
   };

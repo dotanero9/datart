@@ -35,9 +35,7 @@ class GanttChart extends Chart {
     );
     this.meta.requirements = [
       {
-        task: 1,
-        startDate: 1,
-        endDate: 1,
+        group: [3, 999],
       },
     ];
   }

@@ -37,7 +37,7 @@ services:
     command: >
       sh -c "
         cd /app &&
-        mvn clean install -DskipTests &&
+        mvn clean install -DskipTests -Dskip.npm -Dskip.installnodenpm &&
         cd /app/server &&
         mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.jvmArguments='-Dspring.datasource.url=jdbc:mysql://mysql:3306/datart?useSSL=false&serverTimezone=Asia/Shanghai -Dspring.redis.host=redis'
       "
@@ -53,11 +53,13 @@ services:
     environment:
       - NODE_ENV=development
       - REACT_APP_API_BASE_URL=http://localhost:8080
+      - WATCHPACK_POLLING=true
     volumes:
       - ./frontend:/app/frontend
     command: >
       sh -c "
         cd /app/frontend &&
+        npm install chokidar@3 --save-dev --legacy-peer-deps &&
         npm start
       "
 

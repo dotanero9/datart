@@ -3,7 +3,7 @@
  */
 import { EChartsCoreOption, SeriesOption } from 'echarts';
 
-export interface HeatmapSeries extends SeriesOption {
+export interface HeatmapSeries extends Omit<SeriesOption, 'type'> {
   type: 'heatmap';
   coordinateSystem?: 'cartesian2d' | 'geo' | 'calendar';
   data?: number[][];

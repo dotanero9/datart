@@ -35,8 +35,7 @@ class GraphChart extends Chart {
     );
     this.meta.requirements = [
       {
-        source: 1,
-        target: 1,
+        group: [2, 999],
       },
     ];
   }

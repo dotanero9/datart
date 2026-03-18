@@ -3,7 +3,7 @@
  */
 import { EChartsCoreOption, SeriesOption } from 'echarts';
 
-export interface FunnelSeries extends SeriesOption {
+export interface FunnelSeries extends Omit<SeriesOption, 'type' | 'data'> {
   type: 'funnel';
   data: Array<{
     value: number;

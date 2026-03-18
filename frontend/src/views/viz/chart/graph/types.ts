@@ -3,7 +3,7 @@
  */
 import { EChartsCoreOption, SeriesOption } from 'echarts';
 
-export interface GraphSeries extends SeriesOption {
+export interface GraphSeries extends Omit<SeriesOption, 'type'> {
   type: 'graph';
   layout?: 'none' | 'force' | 'circular';
   symbol?: string;
