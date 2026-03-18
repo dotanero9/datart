@@ -1,0 +1,135 @@
+name: PR Review Automation
+
+on:
+  pull_request:
+    types: [opened, closed]
+
+jobs:
+  update-project-status:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true || github.event.action == 'opened'
+    steps:
+      - name: Update Project Status
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const pr = context.payload.pull_request;
+            const body = pr.body || '';
+            
+            // Extract issue numbers from PR body
+            const issueRegex = /#(\d+)/g;
+            const matches = [...body.matchAll(issueRegex)];
+            const issueNumbers = matches.map(m => parseInt(m[1]));
+            
+            // Also check PR title and comments for issue references
+            const titleMatches = pr.title.match(/#(\d+)/g);
+            if (titleMatches) {
+              titleMatches.forEach(m => {
+                const num = parseInt(m.substring(1));
+                if (!issueNumbers.includes(num)) {
+                  issueNumbers.push(num);
+                }
+              });
+            }
+            
+            if (issueNumbers.length === 0) {
+              console.log('No linked issues found');
+              return;
+            }
+            
+            const projectNumber = 2;
+            const owner = 'dotanero9';
+            
+            // Get project ID
+            const projectQuery = `query($owner: String!, $number: Int!) {
+              user(login: $owner) {
+                projectV2(number: $number) {
+                  id
+                  fields(first: 20) {
+                    nodes {
+                      ... on ProjectV2SingleSelectField {
+                        id
+                        name
+                        options {
+                          id
+                          name
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }`;
+            
+            const projectResult = await github.graphql(projectQuery, { owner, number: projectNumber });
+            const project = projectResult.user.projectV2;
+            const statusField = project.fields.nodes.find(f => f.name === 'Status');
+            
+            let targetOptionId;
+            if (context.payload.action === 'opened') {
+              targetOptionId = statusField.options.find(o => o.name === 'In Review')?.id;
+            } else if (pr.merged) {
+              targetOptionId = statusField.options.find(o => o.name === 'Done')?.id;
+            }
+            
+            if (!targetOptionId) {
+              console.log('Target status option not found');
+              return;
+            }
+            
+            // Update each linked issue
+            for (const issueNumber of issueNumbers) {
+              // Get item ID from project
+              const itemsQuery = `query($owner: String!, $number: Int!, $issueNumber: Int!) {
+                user(login: $owner) {
+                  projectV2(number: $number) {
+                    items(first: 100) {
+                      nodes {
+                        id
+                        content {
+                          ... on Issue {
+                            number
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }`;
+              
+              const itemsResult = await github.graphql(itemsQuery, { owner, number: projectNumber, issueNumber });
+              const item = itemsResult.user.projectV2.items.nodes.find(
+                node => node.content?.number === issueNumber
+              );
+              
+              if (!item) {
+                console.log(`Issue #${issueNumber} not found in project`);
+                continue;
+              }
+              
+              // Update item status
+              const updateMutation = `mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                updateProjectV2ItemFieldValue(input: {
+                  projectId: $projectId
+                  itemId: $itemId
+                  fieldId: $fieldId
+                  value: {
+                    singleSelectOptionId: $optionId
+                  }
+                }) {
+                  projectV2Item {
+                    id
+                  }
+                }
+              }`;
+              
+              await github.graphql(updateMutation, {
+                projectId: project.id,
+                itemId: item.id,
+                fieldId: statusField.id,
+                optionId: targetOptionId
+              });
+              
+              console.log(`Updated issue #${issueNumber} to ${pr.merged ? 'Done' : 'In Review'}`);
+            }
