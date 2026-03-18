@@ -749,7 +749,6 @@
               "category": "Category",
               "open": "Open",
               "relation": "Relation",
-              "operation": "Operation",
               "event": "Event"
             },
             "event": {
@@ -1433,6 +1432,7 @@
         "success": "Success",
         "delete": "Delete",
         "moveToTrash": "Move to recycle bin",
+        "restoredSuccess": "Restored successfully",
         "successStarted": "Successfully started",
         "successStop": "Stopped successfully",
         "successImmediately": "Executed successfully immediately",
@@ -1647,6 +1647,75 @@
       "schedule": {
         "0": "Manage"
       }
+    },
+    "field": {
+      "title": "Field-Level Permissions",
+      "fieldName": "Field Name",
+      "visibility": "Visibility",
+      "maskingRule": "Masking Rule",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "masked": "Masked",
+      "notApplicable": "N/A",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "masking": {
+      "managerTitle": "Masking Rule Management",
+      "builtInRules": "Built-in Masking Rules",
+      "customRules": "Custom Masking Rules",
+      "createRule": "Create Rule",
+      "editRule": "Edit Rule",
+      "typeName": "Type",
+      "ruleName": "Name",
+      "description": "Description",
+      "maskType": "Mask Type",
+      "actions": "Actions",
+      "apply": "Apply",
+      "save": "Save",
+      "cancel": "Cancel",
+      "nameRequired": "Name is required",
+      "typeRequired": "Mask type is required",
+      "enterRuleName": "Enter rule name",
+      "selectMaskType": "Select mask type",
+      "enterDescription": "Enter description",
+      "showCount": "Show Count",
+      "countRequired": "Count is required",
+      "enterCount": "Enter count",
+      "showHeadCount": "Head Count",
+      "showTailCount": "Tail Count",
+      "maskChar": "Mask Character",
+      "enterMaskChar": "Enter mask character",
+      "regexPattern": "Regex Pattern",
+      "patternRequired": "Pattern is required",
+      "enterRegexPattern": "Enter regex pattern",
+      "replacement": "Replacement",
+      "replacementRequired": "Replacement is required",
+      "enterReplacement": "Enter replacement"
+    },
+    "inheritance": {
+      "title": "Permission Inheritance",
+      "level": "Level",
+      "enabled": "Enabled",
+      "cascadeOptions": "Cascade Options",
+      "description": "Description",
+      "organization": "Organization",
+      "department": "Department",
+      "team": "Team",
+      "user": "User",
+      "refresh": "Refresh",
+      "howItWorks": "How it works:",
+      "inheritanceDescription": "Permission inheritance allows permissions to cascade from higher levels to lower levels in the hierarchy.",
+      "organizationToDepartment": "• Organization → Department: Permissions granted at organization level are inherited by departments",
+      "departmentToTeam": "• Department → Team: Permissions granted at department level are inherited by teams",
+      "teamToUser": "• Team → User: Permissions granted at team level are inherited by users",
+      "warning": "Warning:",
+      "inheritanceWarning": "Enabling inheritance may override existing permissions at lower levels. Use with caution."
+    },
+    "fieldLevel": {
+      "title": "Field-Level Permissions",
+      "fieldConfigTab": "Field Configuration",
+      "inheritanceTab": "Inheritance Settings"
     }
   },
   "variable": {

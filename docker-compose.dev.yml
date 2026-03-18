@@ -34,12 +34,13 @@ services:
       SPRING_PROFILES_ACTIVE: dev
     volumes:
       - .:/app
+      - ./maven/settings.xml:/root/.m2/settings.xml
     command: >
       sh -c "
         cd /app &&
-        mvn clean install -DskipTests &&
+        mvn clean install -DskipTests -Dexec.skip=true -s /root/.m2/settings.xml &&
         cd /app/server &&
-        mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.jvmArguments='-Dspring.datasource.url=jdbc:mysql://mysql:3306/datart?useSSL=false&serverTimezone=Asia/Shanghai -Dspring.redis.host=redis'
+        mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.jvmArguments='-Dspring.datasource.url=jdbc:mysql://mysql:3306/datart?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true -Dspring.datasource.username=root -Dspring.datasource.password=datart123456 -Dspring.redis.host=redis'
       "
 
   frontend:
