@@ -10,7 +10,6 @@ services:
       MYSQL_ROOT_PASSWORD: datart123456
       MYSQL_DATABASE: datart
     volumes:
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
       - mysql_data:/var/lib/mysql
     command: --lower_case_table_names=1 --skip-character-set-client-handshake
 
@@ -23,10 +22,9 @@ services:
       - redis_data:/data
 
   backend:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: maven:3.8-openjdk-11
     container_name: datart-backend
+    working_dir: /app
     depends_on:
       - mysql
       - redis
@@ -35,8 +33,14 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: dev
     volumes:
-      - ./backend/src:/app/backend/src
-    command: mvn spring-boot:run -Dspring-boot.run.profiles=dev
+      - .:/app
+    command: >
+      sh -c "
+        cd /app &&
+        mvn clean install -DskipTests &&
+        cd /app/server &&
+        mvn spring-boot:run -Dspring-boot.run.profiles=dev -Dspring-boot.run.jvmArguments='-Dspring.datasource.url=jdbc:mysql://mysql:3306/datart?useSSL=false&serverTimezone=Asia/Shanghai -Dspring.redis.host=redis'
+      "
 
   frontend:
     image: node:16
@@ -45,14 +49,16 @@ services:
     depends_on:
       - backend
     ports:
-      - "8088:8088"
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_API_BASE_URL=http://localhost:8080
     volumes:
-      - .:/app
+      - ./frontend:/app/frontend
     command: >
       sh -c "
         cd /app/frontend &&
-        npm install &&
-        npm run dev
+        npm start
       "
 
 volumes:
